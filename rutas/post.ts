@@ -8,7 +8,6 @@ const fileSystem=new FileSystem();
 
 
 
-
 //obtener post con paginacion
 postRoutes.get('/',async(req:any,res:Response)=>{
 
@@ -28,6 +27,43 @@ postRoutes.get('/',async(req:any,res:Response)=>{
         ok:true,
         pagina:pagina,
         posts
+    });
+});
+
+
+//obtener todos los post de un usuario
+postRoutes.get('/perfil/:userid',async(req:any,res:Response)=>{
+    const userId=req.params.userid;
+
+    //let pagina =Number(req.query.pagina) ||1;
+    //let skip=pagina -1;
+    //skip=skip*10;
+    //recibimos los diferentes posts y luego los mostramos
+    const posts = await Post.find()
+    //.sort({_id:-1})
+    //.skip(skip)
+    //.limit(10)
+    .populate('usuario','-password')
+    .exec();
+    
+    const prueba:any[]=[];
+    posts.forEach((ele:any)=>{
+        if(ele.usuario.id==userId){
+            console.log("entra");
+            prueba.push(ele)
+            
+        }
+    })
+    
+    
+     
+
+    res.json({
+        ok:true,
+        userId:userId,
+        //pagina:pagina,
+        posts:prueba,
+        
     });
 });
 

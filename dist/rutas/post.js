@@ -36,6 +36,33 @@ postRoutes.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         posts
     });
 }));
+//obtener todos los post de un usuario
+postRoutes.get('/perfil/:userid', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const userId = req.params.userid;
+    //let pagina =Number(req.query.pagina) ||1;
+    //let skip=pagina -1;
+    //skip=skip*10;
+    //recibimos los diferentes posts y luego los mostramos
+    const posts = yield post_model_1.Post.find()
+        //.sort({_id:-1})
+        //.skip(skip)
+        //.limit(10)
+        .populate('usuario', '-password')
+        .exec();
+    const prueba = [];
+    posts.forEach((ele) => {
+        if (ele.usuario.id == userId) {
+            console.log("entra");
+            prueba.push(ele);
+        }
+    });
+    res.json({
+        ok: true,
+        userId: userId,
+        //pagina:pagina,
+        posts: prueba,
+    });
+}));
 //crear post
 postRoutes.post('/', [autenticacion_1.verificarToken], (req, res) => {
     const body = req.body;
