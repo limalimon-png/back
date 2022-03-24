@@ -33,20 +33,14 @@ postRoutes.get('/',async(req:any,res:Response)=>{
 
 //obtener todos los post de un usuario
 postRoutes.get('/perfil/:userid',async(req:any,res:Response)=>{
+   
+    const prueba:any[]=[];
     const userId=req.params.userid;
-
-    //let pagina =Number(req.query.pagina) ||1;
-    //let skip=pagina -1;
-    //skip=skip*10;
-    //recibimos los diferentes posts y luego los mostramos
     const posts = await Post.find()
-    //.sort({_id:-1})
-    //.skip(skip)
-    //.limit(10)
     .populate('usuario','-password')
     .exec();
     
-    const prueba:any[]=[];
+    
     posts.forEach((ele:any)=>{
         if(ele.usuario.id==userId){
             console.log("entra");
@@ -113,10 +107,11 @@ postRoutes.post('/upload',[verificarToken],async (req:any,res:Response)=>{
     }
 
     //comprobar que no es una imagen //hay que hacerque se puedan subir videos
-    if(!file.mimetype.includes('image')){
+    //mimetype es el para identificar el tipo de archivo
+    if(!file.mimetype.includes('image') && !file.mimetype.includes('video')){
         return res.status(400).json({
             ok:false,
-            mensaje:'no es una imagen'
+            mensaje:'no es una tipo de archivo valido'
         });
     }
     //manda el archivo y el id
