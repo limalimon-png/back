@@ -22,7 +22,9 @@ server.app.use((0, cors_1.default)({ origin: true, credentials: true }));
 server.app.use('/user', usuario_1.default);
 server.app.use('/posts', post_1.default);
 //conectar con base de datos mongoDB
-mongoose_1.default.connect('mongodb://localhost:27017/app', (err) => {
+const conection = 'mongodb+srv://guillermo:3Qrzg6g0xFvLGpUS@cluster0.kbzko.mongodb.net/app?retryWrites=true&w=majority';
+const conexion = 'mongodb://localhost:27017/app';
+mongoose_1.default.connect(conexion, (err) => {
     if (err)
         throw err;
     console.log('Base de datos ONLINE');

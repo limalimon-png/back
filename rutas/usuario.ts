@@ -9,12 +9,13 @@ import { verificarToken } from '../middlewares/autenticacion';
 const userRoutes= Router();
 
 
-//crear login
+//inicar sesion
 userRoutes.post('/login',(req:Request,res:Response)=>{
     const body=req.body;
+    //buscamos el email en la base de datos
     Usuario.findOne({email: body.email},(err: any,userDB: any)=>{
         if(err) throw err;
-
+        //si no existe mandamos esto y salinmos
         if(!userDB){
             return res.json({
                 ok:false,
@@ -23,6 +24,8 @@ userRoutes.post('/login',(req:Request,res:Response)=>{
             });
         }
 
+        // en caso de que exista ,comprobamos la contraseña que esta encriptada
+        //si es correcto  comrpobaremos el token, y cogeremos los datos del usuario
         if(userDB.compruebaPass(body.password)){
             const tokenUser=Token.getToken({
                 _id:userDB._id,
@@ -54,7 +57,8 @@ userRoutes.post('/login',(req:Request,res:Response)=>{
 //crear un usuario
 
 userRoutes.post('/create',(req:Request,res:Response)=>{
-   
+
+   //creamos una constante con la informacion del usuario para luego pasarselo al modelo usuario
     const user={
         nombre: req.body.nombre ,
         email:req.body.email  ,
@@ -65,6 +69,7 @@ userRoutes.post('/create',(req:Request,res:Response)=>{
     }
     
     Usuario.create(user).then(userDB=>{
+        //comprobamos que el token es valido y no está expirado
         const tokenUser=Token.getToken({
             _id:userDB._id,
             nombre:userDB.nombre,
@@ -88,7 +93,7 @@ userRoutes.post('/create',(req:Request,res:Response)=>{
 
 });
 
-//actualizar
+//actualizar datos usuarios
 // [verificarToken],verificarToken
 userRoutes.post('/update',verificarToken,(req:any,res:Response)=>{
     
@@ -99,6 +104,7 @@ userRoutes.post('/update',verificarToken,(req:any,res:Response)=>{
         
       
     }
+    //comprobamos que existe el usuario
     Usuario.findByIdAndUpdate(req.usuario._id,user,{new:true},(err,userDB)=>{
 
 
@@ -114,6 +120,7 @@ userRoutes.post('/update',verificarToken,(req:any,res:Response)=>{
 
         }
 
+        //generamos l nuevo token con los datos del usuario
         const tokenUser=Token.getToken({
             _id:userDB._id,
             nombre:userDB.nombre,
@@ -135,7 +142,7 @@ userRoutes.post('/update',verificarToken,(req:any,res:Response)=>{
 
 });
 
-//devolver la informacion del token
+//devolver la informacion del token 
 userRoutes.get('/',[verificarToken],(req:any,res:Response)=>{
    
     const usuario=req.usuario;

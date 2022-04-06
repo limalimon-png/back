@@ -29,8 +29,9 @@ server.app.use('/user',userRoutes);
 server.app.use('/posts',postRoutes);
 
 //conectar con base de datos mongoDB
-
-mongoose.connect('mongodb://localhost:27017/app',
+const conection='mongodb+srv://guillermo:3Qrzg6g0xFvLGpUS@cluster0.kbzko.mongodb.net/app?retryWrites=true&w=majority';
+const conexion='mongodb://localhost:27017/app';
+mongoose.connect(conexion,
 
     ( err ) => {
  

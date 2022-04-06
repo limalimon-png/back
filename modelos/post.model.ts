@@ -1,5 +1,7 @@
 import {Schema,model,Document} from 'mongoose';
 
+//structura de los posts
+
 const postSchema=new Schema({
 
 
@@ -31,6 +33,7 @@ postSchema.pre<IPost>('save',function(next){
     this.created=new Date();
     next();
 });
+
 interface IPost extends Document{
     created:Date;
     
