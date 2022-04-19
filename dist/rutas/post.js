@@ -25,10 +25,14 @@ postRoutes.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     skip = skip * 10;
     //recibimos los diferentes posts y luego los mostramos
     const posts = yield post_model_1.Post.find().
+        //ordenamos de forma descendente
         sort({ _id: -1 })
         .skip(skip)
+        //limita a 10 resultados
         .limit(10)
+        //de la informacion de usuario, quitamos es password
         .populate('usuario', '-password')
+        //ejecuta la query
         .exec();
     res.json({
         ok: true,
@@ -73,8 +77,9 @@ postRoutes.post('/', [autenticacion_1.verificarToken], (req, res) => {
         res.json(err);
     });
 });
-//servicio para subir archivos en principio solo imagenes pero ya lo cambiaremos para videos tambien
+//servicio para subir archivos imagenes y videos
 postRoutes.post('/upload', [autenticacion_1.verificarToken], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    //si no existen archivos
     if (!req.files) {
         return res.status(400).json({
             ok: false,
@@ -85,7 +90,7 @@ postRoutes.post('/upload', [autenticacion_1.verificarToken], (req, res) => __awa
     if (!file) {
         return res.status(400).json({
             ok: false,
-            mensaje: 'No se subió ningun archivo -image'
+            mensaje: 'No se subió ningun archivo'
         });
     }
     //comprobar que no es una imagen //hay que hacerque se puedan subir videos
