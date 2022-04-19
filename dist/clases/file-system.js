@@ -12,9 +12,9 @@ class FileSystem {
         //para poder usar el async y el await se hace en promesas
         //todas las promesas devuelven resolve>lo que ejecuta su va bien y reject si fall
         return new Promise((resolve, reject) => {
-            //crear carpetas
+            //crear nombre carpetas
             const path = this.crearCarpetaUsuario(userId);
-            //archivo
+            //crear nombre archivo
             const nombreArchivo = this.generarNombreArchivo(file.name);
             //mover a la carpeta temporal
             file.mv(`${path}/${nombreArchivo}`, (err) => {
@@ -27,13 +27,16 @@ class FileSystem {
             });
         });
     }
+    //genera un nombre unico
     generarNombreArchivo(nombreOriginal) {
         const nombreArr = nombreOriginal.split('.');
         const extension = nombreArr[nombreArr.length - 1];
         const nombreUnico = (0, uniqid_1.default)();
         return nombreUnico + '.' + extension;
     }
+    //creamos una carpeta para cada usuario con su id para identificarlo
     crearCarpetaUsuario(userId) {
+        //dirname nos da la ruta desde la raiz del dispositivo
         const pathUser = path_1.default.resolve(__dirname, '../uploads', userId);
         const pathUserTemp = pathUser + '/temp';
         // console.log(pathUser);
@@ -44,6 +47,7 @@ class FileSystem {
         }
         return pathUserTemp;
     }
+    //mover los archivos multimedia del temp a post
     imagenesTempToPost(userId) {
         const pathTemp = path_1.default.resolve(__dirname, '../uploads', userId, 'temp');
         const pathPosts = path_1.default.resolve(__dirname, '../uploads', userId, 'posts');
@@ -66,6 +70,7 @@ class FileSystem {
     getFotoUrl(userId, img) {
         const pathFoto = path_1.default.resolve(__dirname, '../uploads', userId, 'posts', img);
         const existe = fs_1.default.existsSync(pathFoto);
+        //en caso de que no tenga imagenes coge la no imagen
         if (!existe) {
             return path_1.default.resolve(__dirname, '../assets/noimage.png');
         }

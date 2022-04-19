@@ -108,7 +108,7 @@ postRoutes.post('/upload', [autenticacion_1.verificarToken], (req, res) => __awa
         file: file.mimetype
     });
 }));
-//coger las imagenes
+//coger las imagenes y videos
 postRoutes.get('/imagen/:userid/:img', (req, res) => {
     const userId = req.params.userid;
     const img = req.params.img;

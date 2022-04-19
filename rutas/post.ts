@@ -133,7 +133,7 @@ postRoutes.post('/upload',[verificarToken],async (req:any,res:Response)=>{
 
 });
 
-//coger las imagenes
+//coger las imagenes y videos
 postRoutes.get('/imagen/:userid/:img',(req:any,res:Response)=>{
 const userId=req.params.userid;
 const img=req.params.img;
