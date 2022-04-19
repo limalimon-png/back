@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Post = void 0;
 const mongoose_1 = require("mongoose");
+//structura de los posts
 const postSchema = new mongoose_1.Schema({
     created: {
         type: Date
