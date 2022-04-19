@@ -34,6 +34,8 @@ postSchema.pre<IPost>('save',function(next){
     next();
 });
 
+
+//creamos la interfaz
 interface IPost extends Document{
     created:Date;
     

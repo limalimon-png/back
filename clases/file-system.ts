@@ -11,9 +11,9 @@ export default class FileSystem {
 
         return new Promise<void>((resolve, reject) => {
 
-            //crear carpetas
+            //crear nombre carpetas
             const path = this.crearCarpetaUsuario(userId);
-            //archivo
+            //crear nombre archivo
             const nombreArchivo = this.generarNombreArchivo(file.name);
 
             //mover a la carpeta temporal
@@ -36,6 +36,7 @@ export default class FileSystem {
 
 
     }
+    //genera un nombre unico
     private generarNombreArchivo(nombreOriginal: string) {
         const nombreArr = nombreOriginal.split('.');
         const extension = nombreArr[nombreArr.length - 1];
@@ -45,7 +46,9 @@ export default class FileSystem {
 
     }
 
+    //creamos una carpeta para cada usuario con su id para identificarlo
     private crearCarpetaUsuario(userId: string) {
+        //dirname nos da la ruta desde la raiz del dispositivo
         const pathUser = path.resolve(__dirname, '../uploads', userId);
         const pathUserTemp = pathUser + '/temp';
        // console.log(pathUser);
@@ -60,6 +63,8 @@ export default class FileSystem {
 
     }
 
+
+    //mover los archivos multimedia del temp a post
     imagenesTempToPost(userId:string){
         const pathTemp = path.resolve(__dirname, '../uploads', userId,'temp');
         const pathPosts = path.resolve(__dirname, '../uploads', userId,'posts');
@@ -89,6 +94,7 @@ export default class FileSystem {
         const pathFoto=path.resolve(__dirname, '../uploads', userId,'posts',img);
 
         const existe =fs.existsSync(pathFoto);
+        //en caso de que no tenga imagenes coge la no imagen
         if(!existe){
             return path.resolve(__dirname,'../assets/noimage.png');
 

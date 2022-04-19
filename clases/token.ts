@@ -1,11 +1,13 @@
 import jwt from 'jsonwebtoken'
 
 export default class Token{
+    //la semilla es la palabra secreta que usaremos
     private static seed: string='superSeed';
     private static cadudidad: string ='30d';
 
     static getToken(payload:any):string{
 
+        //firmar el token
         return jwt.sign({
             usuario:payload
         },this.seed,{expiresIn:this.cadudidad})

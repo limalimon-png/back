@@ -16,10 +16,14 @@ postRoutes.get('/',async(req:any,res:Response)=>{
     skip=skip*10;
     //recibimos los diferentes posts y luego los mostramos
     const posts = await Post.find().
+    //ordenamos de forma descendente
     sort({_id:-1})
     .skip(skip)
+    //limita a 10 resultados
     .limit(10)
+    //de la informacion de usuario, quitamos es password
     .populate('usuario','-password')
+    //ejecuta la query
     .exec();
      
 
@@ -88,9 +92,10 @@ postRoutes.post('/',[verificarToken],(req:any,res:Response)=>{
    
 });
 
-//servicio para subir archivos en principio solo imagenes pero ya lo cambiaremos para videos tambien
+//servicio para subir archivos imagenes y videos
 postRoutes.post('/upload',[verificarToken],async (req:any,res:Response)=>{
 
+    //si no existen archivos
     if(!req.files){
         return res.status(400).json({
             ok:false,
@@ -102,7 +107,7 @@ postRoutes.post('/upload',[verificarToken],async (req:any,res:Response)=>{
     if(!file){
         return res.status(400).json({
             ok:false,
-            mensaje:'No se subió ningun archivo -image'
+            mensaje:'No se subió ningun archivo'
         });
     }
 
@@ -128,7 +133,7 @@ postRoutes.post('/upload',[verificarToken],async (req:any,res:Response)=>{
 
 });
 
-//coger las imagenes
+//coger las imagenes y videos
 postRoutes.get('/imagen/:userid/:img',(req:any,res:Response)=>{
 const userId=req.params.userid;
 const img=req.params.img;

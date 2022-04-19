@@ -47,10 +47,12 @@ userRoutes.post('/login', (req, res) => {
 //crear un usuario
 userRoutes.post('/create', (req, res) => {
     //creamos una constante con la informacion del usuario para luego pasarselo al modelo usuario
+    //req es la informacion que le pedimos al usuario, que esta dentro de body y luego ya tiene los atributos
     const user = {
         nombre: req.body.nombre,
         email: req.body.email,
         imagen: req.body.imagen,
+        //el 10 es para que use 10 veces la encri`tacion
         password: bcrypt_1.default.hashSync(req.body.password, 10)
     };
     usuario_model_1.Usuario.create(user).then(userDB => {
@@ -76,6 +78,7 @@ userRoutes.post('/create', (req, res) => {
 // [verificarToken],verificarToken
 userRoutes.post('/update', autenticacion_1.verificarToken, (req, res) => {
     const user = {
+        //en caso de que no venga algun dato volvemos a dejar la informacion que ya existía
         nombre: req.body.nombre || req.usuario.nombre,
         email: req.body.email || req.usuario.email,
         imagen: req.body.imagen || req.usuario.imagen,

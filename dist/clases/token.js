@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 class Token {
     static getToken(payload) {
+        //firmar el token
         return jsonwebtoken_1.default.sign({
             usuario: payload
         }, this.seed, { expiresIn: this.cadudidad });
@@ -26,5 +27,6 @@ class Token {
     }
 }
 exports.default = Token;
+//la semilla es la palabra secreta que usaremos
 Token.seed = 'superSeed';
 Token.cadudidad = '30d';

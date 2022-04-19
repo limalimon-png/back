@@ -40,6 +40,7 @@ usuarioSchema.method('compruebaPass',function(password: string=''):boolean{
 
 });
 
+//creamos la interfaz
 interface IUsuario extends Document{
     nombre: string;
     email:string;
