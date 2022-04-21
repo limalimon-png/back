@@ -1,4 +1,13 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -97,7 +106,7 @@ userRoutes.post('/update', autenticacion_1.verificarToken, (req, res) => {
         const tokenUser = token_1.default.getToken({
             _id: userDB._id,
             nombre: userDB.nombre,
-            email: userDB.email
+            email: userDB.email,
         });
         res.json({
             ok: true,
@@ -114,4 +123,23 @@ userRoutes.get('/', [autenticacion_1.verificarToken], (req, res) => {
         usuario
     });
 });
+//devolver icono de usuario 
+userRoutes.get('/geticon/:userid', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var imagen = '';
+    const userId = req.params.userid;
+    const user = yield usuario_model_1.Usuario.find()
+        .exec();
+    user.forEach((ele) => {
+        if (ele._id == userId) {
+            console.log("entra");
+            imagen = ele.imagen;
+        }
+    });
+    //localhost:3000/user/geticon/61fd18477bece05749331f3f
+    res.json({
+        ok: true,
+        userId: userId,
+        imagen: imagen,
+    });
+}));
 exports.default = userRoutes;

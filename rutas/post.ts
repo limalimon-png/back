@@ -64,6 +64,35 @@ postRoutes.get('/perfil/:userid',async(req:any,res:Response)=>{
         
     });
 });
+//obtener todos los post de un usuario
+postRoutes.get('/perfilGente/:email',async(req:any,res:Response)=>{
+   
+    const prueba:any[]=[];
+    const email=req.params.email;
+    const posts = await Post.find()
+    .populate('usuario','-password')
+    .exec();
+    
+    
+    posts.forEach((ele:any)=>{
+        if(ele.usuario.email==email){
+            console.log("entra");
+            prueba.push(ele)
+            
+        }
+    })
+    
+    
+     
+
+    res.json({
+        ok:true,
+        email:email,
+        //pagina:pagina,
+        posts:prueba,
+        
+    });
+});
 
 
 

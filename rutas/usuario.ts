@@ -127,7 +127,8 @@ userRoutes.post('/update',verificarToken,(req:any,res:Response)=>{
         const tokenUser=Token.getToken({
             _id:userDB._id,
             nombre:userDB.nombre,
-            email:userDB.email
+            email:userDB.email,
+            
         });
         res.json({
             ok:true, 
@@ -154,6 +155,35 @@ userRoutes.get('/',[verificarToken],(req:any,res:Response)=>{
         ok:true,
         usuario
     })
+    
+
+});
+
+//devolver icono de usuario 
+userRoutes.get('/geticon/:userid',async (req:any,res:Response)=>{
+    var imagen:string='';
+    const userId=req.params.userid;
+    const user = await Usuario.find()
+    .exec();
+    
+    
+    user.forEach((ele:any)=>{
+        if(ele._id==userId){
+            console.log("entra");
+            imagen=ele.imagen
+            
+        }
+    })
+    //localhost:3000/user/geticon/61fd18477bece05749331f3f
+    
+     
+
+    res.json({
+        ok:true,
+        userId:userId,
+        imagen:imagen,
+        
+    });
     
 
 });
