@@ -34,11 +34,14 @@ userRoutes.post('/login', (req, res) => {
         }
         // en caso de que exista ,comprobamos la contraseña que esta encriptada
         //si es correcto  comrpobaremos el token, y cogeremos los datos del usuario
+        //añadir aqui los nuevos campos
         if (userDB.compruebaPass(body.password)) {
             const tokenUser = token_1.default.getToken({
                 _id: userDB._id,
                 nombre: userDB.nombre,
-                email: userDB.email
+                email: userDB.email,
+                desc: userDB.desc,
+                imagen: userDB.imagen
             });
             res.json({
                 ok: true,
@@ -53,6 +56,25 @@ userRoutes.post('/login', (req, res) => {
         }
     });
 });
+//obtener los atributos del  usuario
+userRoutes.get('/getusu/:userid', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const prueba = [];
+    const userId = req.params.userid;
+    const user = yield usuario_model_1.Usuario.find()
+        .exec();
+    user.forEach((ele) => {
+        if (ele._id == userId) {
+            console.log("entra");
+            prueba.push(ele);
+        }
+    });
+    prueba[0].password = '';
+    res.json({
+        ok: true,
+        userId: userId,
+        user: prueba,
+    });
+}));
 //crear un usuario
 userRoutes.post('/create', (req, res) => {
     //creamos una constante con la informacion del usuario para luego pasarselo al modelo usuario
@@ -69,7 +91,8 @@ userRoutes.post('/create', (req, res) => {
         const tokenUser = token_1.default.getToken({
             _id: userDB._id,
             nombre: userDB.nombre,
-            email: userDB.email
+            email: userDB.email,
+            desc: userDB.desc
         });
         res.json({
             ok: true,
@@ -91,6 +114,7 @@ userRoutes.post('/update', autenticacion_1.verificarToken, (req, res) => {
         nombre: req.body.nombre || req.usuario.nombre,
         email: req.body.email || req.usuario.email,
         imagen: req.body.imagen || req.usuario.imagen,
+        desc: req.body.desc || req.usuario.desc,
     };
     //comprobamos que existe el usuario
     usuario_model_1.Usuario.findByIdAndUpdate(req.usuario._id, user, { new: true }, (err, userDB) => {
@@ -107,6 +131,7 @@ userRoutes.post('/update', autenticacion_1.verificarToken, (req, res) => {
             _id: userDB._id,
             nombre: userDB.nombre,
             email: userDB.email,
+            desc: userDB.desc
         });
         res.json({
             ok: true,

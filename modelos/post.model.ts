@@ -16,8 +16,9 @@ const postSchema=new Schema({
     img:[{
         type:String
     }],
-    coords:{
-        type:String
+    likes:{
+        type:Number,
+        default:0
     },
     usuario:{
         type:Schema.Types.ObjectId,
@@ -42,7 +43,7 @@ interface IPost extends Document{
     mensaje:String;
     
     img:string[];
-    coords:string;
+    likes:number;
     
     usuario:string;
 }

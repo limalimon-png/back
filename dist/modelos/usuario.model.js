@@ -21,6 +21,10 @@ const usuarioSchema = new mongoose_1.Schema({
         unique: true,
         required: [true, "campo email obligatorio"]
     },
+    desc: {
+        type: String,
+        default: 'Introduce la descripción'
+    },
     password: {
         type: String,
         required: [true, "campo contraseña obligatorio"]

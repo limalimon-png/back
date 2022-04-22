@@ -26,11 +26,14 @@ userRoutes.post('/login',(req:Request,res:Response)=>{
 
         // en caso de que exista ,comprobamos la contraseña que esta encriptada
         //si es correcto  comrpobaremos el token, y cogeremos los datos del usuario
+        //añadir aqui los nuevos campos
         if(userDB.compruebaPass(body.password)){
             const tokenUser=Token.getToken({
                 _id:userDB._id,
                 nombre:userDB.nombre,
-                email:userDB.email
+                email:userDB.email,
+                desc:userDB.desc,
+                imagen:userDB.imagen
             });
             res.json({
                 ok:true,
@@ -51,6 +54,31 @@ userRoutes.post('/login',(req:Request,res:Response)=>{
 });
 
 
+//obtener los atributos del  usuario
+userRoutes.get('/getusu/:userid',async(req:any,res:Response)=>{
+   
+    const prueba:any[]=[];
+    const userId=req.params.userid;
+    const user = await Usuario.find()  
+    .exec(); 
+
+    user.forEach((ele:any)=>{
+        if(ele._id==userId){
+            console.log("entra"); 
+            prueba.push(ele)          
+        }
+    })
+    prueba[0].password='';
+
+    res.json({
+        ok:true,
+        userId:userId,
+        user:prueba,
+        
+    });
+});
+
+
 
 
 
@@ -64,6 +92,8 @@ userRoutes.post('/create',(req:Request,res:Response)=>{
         nombre: req.body.nombre ,
         email:req.body.email  ,
         imagen:req.body.imagen,
+        
+
         //el 10 es para que use 10 veces la encri`tacion
         password:bcrypt.hashSync(req.body.password,10 )
         
@@ -75,7 +105,8 @@ userRoutes.post('/create',(req:Request,res:Response)=>{
         const tokenUser=Token.getToken({
             _id:userDB._id,
             nombre:userDB.nombre,
-            email:userDB.email
+            email:userDB.email,
+            desc:userDB.desc
         });
         res.json({
             ok:true, 
@@ -96,6 +127,7 @@ userRoutes.post('/create',(req:Request,res:Response)=>{
 });
 
 //actualizar datos usuarios
+
 // [verificarToken],verificarToken
 userRoutes.post('/update',verificarToken,(req:any,res:Response)=>{
     
@@ -104,6 +136,7 @@ userRoutes.post('/update',verificarToken,(req:any,res:Response)=>{
         nombre: req.body.nombre || req.usuario.nombre,
         email:req.body.email    || req.usuario.email,
         imagen:req.body.imagen  || req.usuario.imagen,
+        desc:req.body.desc  || req.usuario.desc,
         
       
     }
@@ -128,6 +161,7 @@ userRoutes.post('/update',verificarToken,(req:any,res:Response)=>{
             _id:userDB._id,
             nombre:userDB.nombre,
             email:userDB.email,
+            desc:userDB.desc
             
         });
         res.json({

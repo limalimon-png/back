@@ -21,6 +21,11 @@ email:{
     unique:true,
     required:[true,"campo email obligatorio"]
 },
+desc:{
+    type:String,
+
+    default:'Introduce la descripción'
+},
 
 password:{
     type:String,
@@ -46,6 +51,7 @@ interface IUsuario extends Document{
     email:string;
     imagen:string;
     password:string;
+    desc:string
     compruebaPass(password:string):boolean;
 }
 

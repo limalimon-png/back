@@ -14,8 +14,9 @@ const postSchema = new mongoose_1.Schema({
     img: [{
             type: String
         }],
-    coords: {
-        type: String
+    likes: {
+        type: Number,
+        default: 0
     },
     usuario: {
         type: mongoose_1.Schema.Types.ObjectId,

@@ -60,26 +60,6 @@ postRoutes.get('/perfil/:userid', (req, res) => __awaiter(void 0, void 0, void 0
         posts: prueba,
     });
 }));
-//obtener todos los post de un usuario
-postRoutes.get('/perfilGente/:email', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const prueba = [];
-    const email = req.params.email;
-    const posts = yield post_model_1.Post.find()
-        .populate('usuario', '-password')
-        .exec();
-    posts.forEach((ele) => {
-        if (ele.usuario.email == email) {
-            console.log("entra");
-            prueba.push(ele);
-        }
-    });
-    res.json({
-        ok: true,
-        email: email,
-        //pagina:pagina,
-        posts: prueba,
-    });
-}));
 //crear post
 postRoutes.post('/', [autenticacion_1.verificarToken], (req, res) => {
     const body = req.body;
