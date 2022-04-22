@@ -7,6 +7,7 @@ import cors from 'cors';
 import express from "express";
 import fileUpload from 'express-fileupload'
 import postRoutes from './rutas/post';
+import likesRoutes from "./rutas/likes";
 
 
 const server =new Server();
@@ -27,6 +28,7 @@ server.app.use(cors({origin:true,credentials:true}));
 //rutas app
 server.app.use('/user',userRoutes);
 server.app.use('/posts',postRoutes);
+server.app.use('/likes',likesRoutes);
 
 //conectar con base de datos mongoDB
 //const conection='mongodb+srv://guillermo:3Qrzg6g0xFvLGpUS@cluster0.kbzko.mongodb.net/app?retryWrites=true&w=majority';

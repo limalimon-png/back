@@ -10,6 +10,7 @@ const cors_1 = __importDefault(require("cors"));
 const express_1 = __importDefault(require("express"));
 const express_fileupload_1 = __importDefault(require("express-fileupload"));
 const post_1 = __importDefault(require("./rutas/post"));
+const likes_1 = __importDefault(require("./rutas/likes"));
 const server = new server_1.default();
 //recibe la informacion del post
 server.app.use(express_1.default.urlencoded({ extended: true }));
@@ -21,6 +22,7 @@ server.app.use((0, cors_1.default)({ origin: true, credentials: true }));
 //rutas app
 server.app.use('/user', usuario_1.default);
 server.app.use('/posts', post_1.default);
+server.app.use('/likes', likes_1.default);
 //conectar con base de datos mongoDB
 //const conection='mongodb+srv://guillermo:3Qrzg6g0xFvLGpUS@cluster0.kbzko.mongodb.net/app?retryWrites=true&w=majority';
 const conexion = 'mongodb://localhost:27017/app';
