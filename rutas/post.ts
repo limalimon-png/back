@@ -142,4 +142,36 @@ const pathFoto=fileSystem.getFotoUrl(userId,img);
 res.sendFile(pathFoto);
 
 });
+
+//get post a traves del id
+postRoutes.get('/getlikepost/:postid',async(req:any,res:Response)=>{
+   
+    const prueba:any[]=[];
+    const postId=req.params.postid;
+    const posts = await Post.find()
+    .populate('usuario','-password')
+    .exec();
+    
+    
+    posts.forEach((ele:any)=>{
+        if(ele._id==postId){
+            console.log("entra");
+            prueba.push(ele)
+            
+        }
+    })
+    
+    
+    
+     
+
+    res.json({
+        ok:true,
+        //pagina:pagina,
+        posts:prueba,
+       //numeroLikes: prueba.length
+        
+    });
+});
+
 export default postRoutes;

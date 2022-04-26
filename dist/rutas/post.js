@@ -115,4 +115,24 @@ postRoutes.get('/imagen/:userid/:img', (req, res) => {
     const pathFoto = fileSystem.getFotoUrl(userId, img);
     res.sendFile(pathFoto);
 });
+//get post a traves del id
+postRoutes.get('/getlikepost/:postid', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const prueba = [];
+    const postId = req.params.postid;
+    const posts = yield post_model_1.Post.find()
+        .populate('usuario', '-password')
+        .exec();
+    posts.forEach((ele) => {
+        if (ele._id == postId) {
+            console.log("entra");
+            prueba.push(ele);
+        }
+    });
+    res.json({
+        ok: true,
+        //pagina:pagina,
+        posts: prueba,
+        //numeroLikes: prueba.length
+    });
+}));
 exports.default = postRoutes;
