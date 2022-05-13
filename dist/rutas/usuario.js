@@ -167,4 +167,26 @@ userRoutes.get('/geticon/:userid', (req, res) => __awaiter(void 0, void 0, void 
         imagen: imagen,
     });
 }));
+//devolver icono y nombre de usuario
+userRoutes.get('/geticonname/:userid', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var imagen = '';
+    var nombre = '';
+    const userId = req.params.userid;
+    const user = yield usuario_model_1.Usuario.find()
+        .exec();
+    user.forEach((ele) => {
+        if (ele._id == userId) {
+            console.log("entra");
+            imagen = ele.imagen;
+            nombre = ele.nombre;
+        }
+    });
+    //localhost:3000/user/geticon/61fd18477bece05749331f3f
+    res.json({
+        ok: true,
+        userId: userId,
+        imagen: imagen,
+        nombre: nombre,
+    });
+}));
 exports.default = userRoutes;
