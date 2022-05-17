@@ -235,6 +235,8 @@ userRoutes.get('/geticonname/:userid',async (req:any,res:Response)=>{
     user.forEach((ele:any)=>{
         if(ele._id==userId){
             console.log("entra");
+            console.log('el user',ele);
+            
             imagen=ele.imagen
             nombre=ele.nombre
             

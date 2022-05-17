@@ -177,6 +177,7 @@ userRoutes.get('/geticonname/:userid', (req, res) => __awaiter(void 0, void 0, v
     user.forEach((ele) => {
         if (ele._id == userId) {
             console.log("entra");
+            console.log('el user', ele);
             imagen = ele.imagen;
             nombre = ele.nombre;
         }
