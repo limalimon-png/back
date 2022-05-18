@@ -60,6 +60,23 @@ postRoutes.get('/perfil/:userid', (req, res) => __awaiter(void 0, void 0, void 0
         posts: prueba,
     });
 }));
+//obtener post por id
+postRoutes.get('/perfil2/:postid', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const prueba = [];
+    const postId = req.params.postid;
+    const posts = yield post_model_1.Post.find()
+        .populate('usuario', '-password')
+        .exec();
+    posts.forEach((ele) => {
+        if (ele._id == postId) {
+            console.log("entra");
+            prueba.push(ele);
+        }
+    });
+    res.json({
+        posts: prueba,
+    });
+}));
 //crear post
 postRoutes.post('/', [autenticacion_1.verificarToken], (req, res) => {
     const body = req.body;

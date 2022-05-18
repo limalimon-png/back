@@ -193,6 +193,19 @@ userRoutes.get('/',[verificarToken],(req:any,res:Response)=>{
 
 });
 
+//devolver userid del token 
+userRoutes.get('/get',[verificarToken],(req:any,res:Response)=>{
+   
+    const usuario=req.usuario._id;
+
+    res.json({
+        ok:true,
+        usuario
+    })
+    
+
+});
+
 //devolver icono de usuario 
 userRoutes.get('/geticon/:userid',async (req:any,res:Response)=>{
     var imagen:string='';

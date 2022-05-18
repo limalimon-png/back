@@ -54,12 +54,42 @@ postRoutes.get('/perfil/:userid',async(req:any,res:Response)=>{
     })
     
     
+    
      
 
     res.json({
         ok:true,
         userId:userId,
         //pagina:pagina,
+        posts:prueba,
+        
+    });
+});
+
+//obtener post por id
+postRoutes.get('/perfil2/:postid',async(req:any,res:Response)=>{
+   
+    const prueba:any[]=[];
+    const postId=req.params.postid;
+    const posts = await Post.find()
+    .populate('usuario','-password')
+    .exec();
+    
+    
+    posts.forEach((ele:any)=>{
+        if(ele._id==postId){
+            console.log("entra");
+            prueba.push(ele)
+            
+        }
+    })
+    
+    
+    
+     
+
+    res.json({
+        
         posts:prueba,
         
     });
@@ -160,7 +190,6 @@ postRoutes.get('/getlikepost/:postid',async(req:any,res:Response)=>{
             
         }
     })
-    
     
     
      
