@@ -78,6 +78,32 @@ postRoutes.get('/perfil2/:postid', (req, res) => __awaiter(void 0, void 0, void 
     });
 }));
 //crear post
+postRoutes.post('/a', [autenticacion_1.verificarToken], (req, res) => {
+    const pos = {
+        mensaje: req.body.mensaje,
+        usuario: req.body.usuario,
+        img: req.body.img
+    };
+    // const body =req.body;
+    //body.usuario=req.usuario._id;
+    // pos.img.forEach(async (element: any) => {
+    //     const file:fileUpload=element;
+    //  await fileSystem.guardarImagenTemporal(file,req.usuario._id);
+    // });
+    //  const imagenes=fileSystem.imagenesTempToPost(req.body.usuario._id);
+    // pos.img=imagenes;
+    post_model_1.Post.create(pos).then((postDB) => __awaiter(void 0, void 0, void 0, function* () {
+        //nos muestre los datos del usuario
+        yield postDB.populate('usuario', '-password');
+        res.json({
+            ok: true,
+            post: postDB
+        });
+    })).catch(err => {
+        res.json(err);
+    });
+});
+//crear post
 postRoutes.post('/', [autenticacion_1.verificarToken], (req, res) => {
     const body = req.body;
     body.usuario = req.usuario._id;
@@ -124,7 +150,29 @@ postRoutes.post('/upload', [autenticacion_1.verificarToken], (req, res) => __awa
         ok: true,
         file: file.mimetype
     });
+    console.log('sale');
 }));
+//actualizar datos post
+// [verificarToken],verificarToken
+postRoutes.post('/update', (req, res) => {
+    console.log('body', req.body);
+    console.log('iamgenes', req.body.img);
+    const body = req.body;
+    //comprobamos que existe el usuario
+    post_model_1.Post.findByIdAndUpdate(body._id, body, { new: true }, (err, userDB) => {
+        if (err)
+            throw err;
+        if (!userDB) {
+            return res.json({
+                ok: false,
+                mensaje: "no existe ese post"
+            });
+        }
+        res.json({
+            ok: true
+        });
+    });
+});
 //coger las imagenes y videos
 postRoutes.get('/imagen/:userid/:img', (req, res) => {
     const userId = req.params.userid;

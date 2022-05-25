@@ -99,12 +99,48 @@ postRoutes.get('/perfil2/:postid',async(req:any,res:Response)=>{
 
 
 //crear post
+postRoutes.post('/a',[verificarToken],(req:any,res:Response)=>{
+    const pos={
+        mensaje:req.body.mensaje,
+        usuario:req.body.usuario,
+        img:req.body.img
+    }
+
+   // const body =req.body;
+    //body.usuario=req.usuario._id;
+    // pos.img.forEach(async (element: any) => {
+    //     const file:fileUpload=element;
+       //  await fileSystem.guardarImagenTemporal(file,req.usuario._id);
+    // });
+   
+  //  const imagenes=fileSystem.imagenesTempToPost(req.body.usuario._id);
+   // pos.img=imagenes;
+
+    Post.create(pos).then(async postDB=>{
+        //nos muestre los datos del usuario
+        await postDB.populate('usuario','-password');
+
+        res.json({
+            ok:true,
+            post:postDB
+    
+        });
+
+    }).catch(err=>{
+        res.json(err);
+    })
+
+   
+});
+
+
+//crear post
 postRoutes.post('/',[verificarToken],(req:any,res:Response)=>{
 
     const body =req.body;
     body.usuario=req.usuario._id;
     const imagenes=fileSystem.imagenesTempToPost(req.usuario._id);
-    body.img=imagenes;
+     body.img=imagenes;
 
     Post.create(body).then(async postDB=>{
         //nos muestre los datos del usuario
@@ -161,8 +197,55 @@ postRoutes.post('/upload',[verificarToken],async (req:any,res:Response)=>{
 
     });
 
+    console.log('sale');
+    
 
 });
+
+
+//actualizar datos post
+
+// [verificarToken],verificarToken
+postRoutes.post('/update',(req:any,res:Response)=>{
+    console.log('body',req.body);
+     console.log('iamgenes',req.body.img);
+    const body =req.body;
+
+  
+    
+    
+   
+    //comprobamos que existe el usuario
+     Post.findByIdAndUpdate(body._id,body,{new:true},(err,userDB)=>{
+
+
+         if(err)throw err;
+
+         if(!userDB){
+             return res.json({
+                 ok:false,
+                 mensaje:"no existe ese post"
+               
+
+             });
+
+         }
+
+         res.json({
+             ok:true
+         })
+
+
+
+     });
+       
+   
+
+
+});
+
+
+
 
 //coger las imagenes y videos
 postRoutes.get('/imagen/:userid/:img',(req:any,res:Response)=>{

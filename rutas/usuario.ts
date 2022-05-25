@@ -130,6 +130,9 @@ userRoutes.post('/create',(req:Request,res:Response)=>{
 
 // [verificarToken],verificarToken
 userRoutes.post('/update',verificarToken,(req:any,res:Response)=>{
+    console.log('usuario',req.body.imagen);
+    console.log(req.usuario.imagen);
+    
     
     const user={
         //en caso de que no venga algun dato volvemos a dejar la informacion que ya existía
