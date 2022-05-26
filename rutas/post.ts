@@ -169,7 +169,8 @@ postRoutes.post('/upload',[verificarToken],async (req:any,res:Response)=>{
             mensaje:'No se subió ningun archivo'
         });
     }
-
+    console.log('upload',req.files.image);
+    
     const file:fileUpload=req.files.image;
     if(!file){
         return res.status(400).json({

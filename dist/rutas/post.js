@@ -129,6 +129,7 @@ postRoutes.post('/upload', [autenticacion_1.verificarToken], (req, res) => __awa
             mensaje: 'No se subió ningun archivo'
         });
     }
+    console.log('upload', req.files.image);
     const file = req.files.image;
     if (!file) {
         return res.status(400).json({

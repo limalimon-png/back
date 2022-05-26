@@ -17,7 +17,9 @@ const usuario_model_1 = require("../modelos/usuario.model");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const token_1 = __importDefault(require("../clases/token"));
 const autenticacion_1 = require("../middlewares/autenticacion");
+const file_system_1 = __importDefault(require("../clases/file-system"));
 const userRoutes = (0, express_1.Router)();
+const fileSystem = new file_system_1.default();
 //inicar sesion
 userRoutes.post('/login', (req, res) => {
     const body = req.body;
@@ -111,6 +113,7 @@ userRoutes.post('/create', (req, res) => {
 userRoutes.post('/update', autenticacion_1.verificarToken, (req, res) => {
     console.log('usuario', req.body.imagen);
     console.log(req.usuario.imagen);
+    // const imagen=fileSystem.imagenesTempToPost(req.usuario._id);
     const user = {
         //en caso de que no venga algun dato volvemos a dejar la informacion que ya existía
         nombre: req.body.nombre || req.usuario.nombre,
@@ -133,7 +136,8 @@ userRoutes.post('/update', autenticacion_1.verificarToken, (req, res) => {
             _id: userDB._id,
             nombre: userDB.nombre,
             email: userDB.email,
-            desc: userDB.desc
+            desc: userDB.desc,
+            // imagen:userDB.imagen
         });
         res.json({
             ok: true,

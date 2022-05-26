@@ -3,11 +3,11 @@ import { Usuario } from '../modelos/usuario.model';
 import bcrypt from 'bcrypt'
 import Token from "../clases/token";
 import { verificarToken } from '../middlewares/autenticacion';
-
+import  FileSystem  from '../clases/file-system';
 
 
 const userRoutes= Router();
-
+const fileSystem=new FileSystem();
 
 //inicar sesion
 userRoutes.post('/login',(req:Request,res:Response)=>{
@@ -133,12 +133,12 @@ userRoutes.post('/update',verificarToken,(req:any,res:Response)=>{
     console.log('usuario',req.body.imagen);
     console.log(req.usuario.imagen);
     
-    
+   // const imagen=fileSystem.imagenesTempToPost(req.usuario._id);
     const user={
         //en caso de que no venga algun dato volvemos a dejar la informacion que ya existía
         nombre: req.body.nombre || req.usuario.nombre,
         email:req.body.email    || req.usuario.email,
-        imagen:req.body.imagen  || req.usuario.imagen,
+        imagen:req.body.imagen || req.usuario.imagen,
         desc:req.body.desc  || req.usuario.desc,
         
       
@@ -164,7 +164,8 @@ userRoutes.post('/update',verificarToken,(req:any,res:Response)=>{
             _id:userDB._id,
             nombre:userDB.nombre,
             email:userDB.email,
-            desc:userDB.desc
+            desc:userDB.desc,
+           // imagen:userDB.imagen
             
         });
         res.json({
