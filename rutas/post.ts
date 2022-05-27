@@ -161,6 +161,7 @@ postRoutes.post('/',[verificarToken],(req:any,res:Response)=>{
 
 //servicio para subir archivos imagenes y videos
 postRoutes.post('/upload',[verificarToken],async (req:any,res:Response)=>{
+    console.log('usuario',req.usuario._id);
 
     //si no existen archivos
     if(!req.files){

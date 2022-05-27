@@ -4,6 +4,8 @@ import bcrypt from 'bcrypt'
 import Token from "../clases/token";
 import { verificarToken } from '../middlewares/autenticacion';
 import  FileSystem  from '../clases/file-system';
+import bodyParser from "body-parser";
+import { fileUpload } from "../interfaces/file-upload";
 
 
 const userRoutes= Router();
@@ -99,6 +101,9 @@ userRoutes.post('/create',(req:Request,res:Response)=>{
         
       
     }
+
+
+
     
     Usuario.create(user).then(userDB=>{
         //comprobamos que el token es valido y no está expirado
@@ -106,13 +111,19 @@ userRoutes.post('/create',(req:Request,res:Response)=>{
             _id:userDB._id,
             nombre:userDB.nombre,
             email:userDB.email,
-            desc:userDB.desc
+            desc:userDB.desc,
+            imagen:userDB.imagen
         });
         res.json({
             ok:true, 
             token:tokenUser
            // mensaje:'todo funcionan correctamente'
         });
+
+
+        //const imagenes=fileSystem.imagenesTempToPost(userDB._id);
+       // console.log(imagenes);
+        
 
     }).catch(err=>{
         res.json({
@@ -121,6 +132,8 @@ userRoutes.post('/create',(req:Request,res:Response)=>{
         });
 
     });
+    
+    
 
     
 
@@ -129,16 +142,20 @@ userRoutes.post('/create',(req:Request,res:Response)=>{
 //actualizar datos usuarios
 
 // [verificarToken],verificarToken
-userRoutes.post('/update',verificarToken,(req:any,res:Response)=>{
+userRoutes.post('/update',verificarToken,async (req:any,res:Response)=>{
     console.log('usuario',req.body.imagen);
     console.log(req.usuario.imagen);
+   const ruta = fileSystem.obtenerImagenesPerfil(req.body._id)
+   console.log('ruta',ruta);
+   
     
-   // const imagen=fileSystem.imagenesTempToPost(req.usuario._id);
+    
+    
     const user={
         //en caso de que no venga algun dato volvemos a dejar la informacion que ya existía
         nombre: req.body.nombre || req.usuario.nombre,
         email:req.body.email    || req.usuario.email,
-        imagen:req.body.imagen || req.usuario.imagen,
+        imagen:ruta[0] || req.usuario.imagen,
         desc:req.body.desc  || req.usuario.desc,
         
       
@@ -165,7 +182,7 @@ userRoutes.post('/update',verificarToken,(req:any,res:Response)=>{
             nombre:userDB.nombre,
             email:userDB.email,
             desc:userDB.desc,
-           // imagen:userDB.imagen
+            imagen:userDB.imagen
             
         });
         res.json({
@@ -183,6 +200,7 @@ userRoutes.post('/update',verificarToken,(req:any,res:Response)=>{
 
 
 });
+
 
 //devolver la informacion del token 
 userRoutes.get('/',[verificarToken],(req:any,res:Response)=>{
@@ -220,8 +238,10 @@ userRoutes.get('/geticon/:userid',async (req:any,res:Response)=>{
     
     user.forEach((ele:any)=>{
         if(ele._id==userId){
-            console.log("entra");
+            console.log("encuentra id");
             imagen=ele.imagen
+            console.log('imagen',imagen);
+            
             
         }
     })
@@ -273,4 +293,92 @@ userRoutes.get('/geticonname/:userid',async (req:any,res:Response)=>{
     
 
 })
+
+
+
+//crear post
+userRoutes.post('/aftercreate',[verificarToken],(req:any,res:Response)=>{
+
+    const body =req.body;
+    body.usuario=req.usuario._id;
+    const imagenes=fileSystem.imagenesTempToPost(req.usuario._id);
+     body.img=imagenes;
+
+    Usuario.create(body).then(async postDB=>{
+        //nos muestre los datos del usuario
+        await postDB.populate('usuario','-password');
+
+        res.json({
+            ok:true,
+            post:postDB
+    
+        });
+
+    }).catch(err=>{
+        res.json(err);
+    })
+
+   
+});
+
+//servicio para subir archivos imagenes y videos
+userRoutes.post('/upload',[verificarToken],async (req:any,res:Response)=>{
+console.log('body',req.body);
+const id=req.body.id
+
+    //si no existen archivos
+    if(!req.files){
+        return res.status(400).json({
+            ok:false,
+            mensaje:'No se subió ningun archivo'
+        });
+    }
+    //console.log('upload',req.files.image);
+    const file:fileUpload=req.files.image;
+   fileSystem.guardarImagenPerfil(file,id);
+    console.log('imagen devuelta');
+   console.log('hola');
+   
+    if(!file){
+        return res.status(400).json({
+            ok:false,
+            mensaje:'No se subió ningun archivo'
+        });
+    }
+
+    //comprobar que no es una imagen //hay que hacerque se puedan subir videos
+    //mimetype es el para identificar el tipo de archivo
+    if(!file.mimetype.includes('image') && !file.mimetype.includes('video')){
+        return res.status(400).json({
+            ok:false,
+            mensaje:'no es una tipo de archivo valido'
+        });
+    }
+    //manda el archivo y el id
+
+   
+
+    res.json({
+        ok:true,
+        file:file.mimetype
+
+
+    });
+
+    console.log('sale');
+    
+
+});
+
+
+
+//coger las imagenes y videos
+userRoutes.get('/imagen/:userid/:img',(req:any,res:Response)=>{
+    const userId=req.params.userid;
+    const img=req.params.img;
+    const pathFoto=fileSystem.getFotoUrlPerfil(userId,img);
+    res.sendFile(pathFoto);
+    
+    });
+
 export default userRoutes;

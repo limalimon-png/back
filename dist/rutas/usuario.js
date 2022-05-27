@@ -94,13 +94,16 @@ userRoutes.post('/create', (req, res) => {
             _id: userDB._id,
             nombre: userDB.nombre,
             email: userDB.email,
-            desc: userDB.desc
+            desc: userDB.desc,
+            imagen: userDB.imagen
         });
         res.json({
             ok: true,
             token: tokenUser
             // mensaje:'todo funcionan correctamente'
         });
+        //const imagenes=fileSystem.imagenesTempToPost(userDB._id);
+        // console.log(imagenes);
     }).catch(err => {
         res.json({
             ok: false,
@@ -110,15 +113,16 @@ userRoutes.post('/create', (req, res) => {
 });
 //actualizar datos usuarios
 // [verificarToken],verificarToken
-userRoutes.post('/update', autenticacion_1.verificarToken, (req, res) => {
+userRoutes.post('/update', autenticacion_1.verificarToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log('usuario', req.body.imagen);
     console.log(req.usuario.imagen);
-    // const imagen=fileSystem.imagenesTempToPost(req.usuario._id);
+    const ruta = fileSystem.obtenerImagenesPerfil(req.body._id);
+    console.log('ruta', ruta);
     const user = {
         //en caso de que no venga algun dato volvemos a dejar la informacion que ya existía
         nombre: req.body.nombre || req.usuario.nombre,
         email: req.body.email || req.usuario.email,
-        imagen: req.body.imagen || req.usuario.imagen,
+        imagen: ruta[0] || req.usuario.imagen,
         desc: req.body.desc || req.usuario.desc,
     };
     //comprobamos que existe el usuario
@@ -137,7 +141,7 @@ userRoutes.post('/update', autenticacion_1.verificarToken, (req, res) => {
             nombre: userDB.nombre,
             email: userDB.email,
             desc: userDB.desc,
-            // imagen:userDB.imagen
+            imagen: userDB.imagen
         });
         res.json({
             ok: true,
@@ -145,7 +149,7 @@ userRoutes.post('/update', autenticacion_1.verificarToken, (req, res) => {
             // mensaje:'todo funcionan correctamente'
         });
     });
-});
+}));
 //devolver la informacion del token 
 userRoutes.get('/', [autenticacion_1.verificarToken], (req, res) => {
     const usuario = req.usuario;
@@ -170,8 +174,9 @@ userRoutes.get('/geticon/:userid', (req, res) => __awaiter(void 0, void 0, void 
         .exec();
     user.forEach((ele) => {
         if (ele._id == userId) {
-            console.log("entra");
+            console.log("encuentra id");
             imagen = ele.imagen;
+            console.log('imagen', imagen);
         }
     });
     //localhost:3000/user/geticon/61fd18477bece05749331f3f
@@ -204,4 +209,65 @@ userRoutes.get('/geticonname/:userid', (req, res) => __awaiter(void 0, void 0, v
         nombre: nombre,
     });
 }));
+//crear post
+userRoutes.post('/aftercreate', [autenticacion_1.verificarToken], (req, res) => {
+    const body = req.body;
+    body.usuario = req.usuario._id;
+    const imagenes = fileSystem.imagenesTempToPost(req.usuario._id);
+    body.img = imagenes;
+    usuario_model_1.Usuario.create(body).then((postDB) => __awaiter(void 0, void 0, void 0, function* () {
+        //nos muestre los datos del usuario
+        yield postDB.populate('usuario', '-password');
+        res.json({
+            ok: true,
+            post: postDB
+        });
+    })).catch(err => {
+        res.json(err);
+    });
+});
+//servicio para subir archivos imagenes y videos
+userRoutes.post('/upload', [autenticacion_1.verificarToken], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log('body', req.body);
+    const id = req.body.id;
+    //si no existen archivos
+    if (!req.files) {
+        return res.status(400).json({
+            ok: false,
+            mensaje: 'No se subió ningun archivo'
+        });
+    }
+    //console.log('upload',req.files.image);
+    const file = req.files.image;
+    fileSystem.guardarImagenPerfil(file, id);
+    console.log('imagen devuelta');
+    console.log('hola');
+    if (!file) {
+        return res.status(400).json({
+            ok: false,
+            mensaje: 'No se subió ningun archivo'
+        });
+    }
+    //comprobar que no es una imagen //hay que hacerque se puedan subir videos
+    //mimetype es el para identificar el tipo de archivo
+    if (!file.mimetype.includes('image') && !file.mimetype.includes('video')) {
+        return res.status(400).json({
+            ok: false,
+            mensaje: 'no es una tipo de archivo valido'
+        });
+    }
+    //manda el archivo y el id
+    res.json({
+        ok: true,
+        file: file.mimetype
+    });
+    console.log('sale');
+}));
+//coger las imagenes y videos
+userRoutes.get('/imagen/:userid/:img', (req, res) => {
+    const userId = req.params.userid;
+    const img = req.params.img;
+    const pathFoto = fileSystem.getFotoUrlPerfil(userId, img);
+    res.sendFile(pathFoto);
+});
 exports.default = userRoutes;

@@ -67,6 +67,10 @@ class FileSystem {
         const pathTemp = path_1.default.resolve(__dirname, '../uploads', userId, 'temp');
         return fs_1.default.readdirSync(pathTemp) || [];
     }
+    obtenerImagenesPerfil(userId) {
+        const pathTemp = path_1.default.resolve(__dirname, '../uploads', userId, 'perfil');
+        return fs_1.default.readdirSync(pathTemp) || [];
+    }
     getFotoUrl(userId, img) {
         const pathFoto = path_1.default.resolve(__dirname, '../uploads', userId, 'posts', img);
         const existe = fs_1.default.existsSync(pathFoto);
@@ -75,6 +79,53 @@ class FileSystem {
             return path_1.default.resolve(__dirname, '../assets/noimage.png');
         }
         return pathFoto;
+    }
+    getFotoUrlPerfil(userId, img) {
+        const pathFoto = path_1.default.resolve(__dirname, '../uploads', userId, 'perfil', img);
+        const existe = fs_1.default.existsSync(pathFoto);
+        //en caso de que no tenga imagenes coge la no imagen
+        if (!existe) {
+            return path_1.default.resolve(__dirname, '../assets/noimage.png');
+        }
+        return pathFoto;
+    }
+    //crear en la carpeta del usuario la carpeta fotoPerfil
+    guardarImagenPerfil(file, userId) {
+        //para poder usar el async y el await se hace en promesas
+        //todas las promesas devuelven resolve>lo que ejecuta su va bien y reject si fall
+        console.log('userid', userId);
+        console.log('fileUpload', file);
+        return new Promise((resolve, reject) => {
+            //crear nombre carpetas
+            const path = this.crearCarpetaConPerfil(userId);
+            //crear nombre archivo
+            const nombreArchivo = this.generarNombreArchivo(file.name);
+            //mover a la carpeta perfil
+            file.mv(`${path}/${nombreArchivo}`, (err) => {
+                if (err) {
+                    reject(err);
+                }
+                else {
+                    resolve();
+                }
+            });
+        });
+    }
+    crearCarpetaConPerfil(userId) {
+        //dirname nos da la ruta desde la raiz del dispositivo
+        const pathUser = path_1.default.resolve(__dirname, '../uploads', userId);
+        const pathUserTemp = pathUser + '/perfil';
+        // console.log(pathUser);
+        const existe = fs_1.default.existsSync(pathUser);
+        if (!existe) {
+            fs_1.default.mkdirSync(pathUser);
+            fs_1.default.mkdirSync(pathUserTemp);
+        }
+        const existe2 = fs_1.default.existsSync(pathUserTemp);
+        if (!existe2) {
+            fs_1.default.mkdirSync(pathUserTemp);
+        }
+        return pathUserTemp;
     }
 }
 exports.default = FileSystem;

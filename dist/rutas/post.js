@@ -122,6 +122,7 @@ postRoutes.post('/', [autenticacion_1.verificarToken], (req, res) => {
 });
 //servicio para subir archivos imagenes y videos
 postRoutes.post('/upload', [autenticacion_1.verificarToken], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log('usuario', req.usuario._id);
     //si no existen archivos
     if (!req.files) {
         return res.status(400).json({
