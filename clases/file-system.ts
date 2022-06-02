@@ -133,7 +133,7 @@ export default class FileSystem {
         console.log('userid', userId);
         console.log('fileUpload', file);
 
-        return new Promise<void>((resolve, reject) => {
+        return new Promise<any>((resolve, reject) => {
 
             //crear nombre carpetas
             const path = this.crearCarpetaConPerfil(userId);
@@ -146,7 +146,7 @@ export default class FileSystem {
                     reject(err);
 
                 } else {
-                    resolve();
+                    resolve(nombreArchivo);
                 }
 
             })

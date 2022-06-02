@@ -106,7 +106,7 @@ class FileSystem {
                     reject(err);
                 }
                 else {
-                    resolve();
+                    resolve(nombreArchivo);
                 }
             });
         });

@@ -122,7 +122,7 @@ userRoutes.post('/update', autenticacion_1.verificarToken, (req, res) => __await
         //en caso de que no venga algun dato volvemos a dejar la informacion que ya existía
         nombre: req.body.nombre || req.usuario.nombre,
         email: req.body.email || req.usuario.email,
-        imagen: ruta[0] || req.usuario.imagen,
+        imagen: req.body.imagen || req.usuario.imagen,
         desc: req.body.desc || req.usuario.desc,
     };
     //comprobamos que existe el usuario
@@ -239,9 +239,7 @@ userRoutes.post('/upload', [autenticacion_1.verificarToken], (req, res) => __awa
     }
     //console.log('upload',req.files.image);
     const file = req.files.image;
-    fileSystem.guardarImagenPerfil(file, id);
-    console.log('imagen devuelta');
-    console.log('hola');
+    const imageNueva = yield fileSystem.guardarImagenPerfil(file, id);
     if (!file) {
         return res.status(400).json({
             ok: false,
@@ -259,7 +257,8 @@ userRoutes.post('/upload', [autenticacion_1.verificarToken], (req, res) => __awa
     //manda el archivo y el id
     res.json({
         ok: true,
-        file: file.mimetype
+        file: file.mimetype,
+        nombreImagen: imageNueva
     });
     console.log('sale');
 }));

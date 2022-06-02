@@ -155,7 +155,7 @@ userRoutes.post('/update',verificarToken,async (req:any,res:Response)=>{
         //en caso de que no venga algun dato volvemos a dejar la informacion que ya existía
         nombre: req.body.nombre || req.usuario.nombre,
         email:req.body.email    || req.usuario.email,
-        imagen:ruta[0] || req.usuario.imagen,
+        imagen:req.body.imagen || req.usuario.imagen,
         desc:req.body.desc  || req.usuario.desc,
         
       
@@ -335,9 +335,9 @@ const id=req.body.id
     }
     //console.log('upload',req.files.image);
     const file:fileUpload=req.files.image;
-   fileSystem.guardarImagenPerfil(file,id);
-    console.log('imagen devuelta');
-   console.log('hola');
+  
+   const imageNueva= await fileSystem.guardarImagenPerfil(file,id);
+  
    
     if(!file){
         return res.status(400).json({
@@ -360,7 +360,8 @@ const id=req.body.id
 
     res.json({
         ok:true,
-        file:file.mimetype
+        file:file.mimetype,
+        nombreImagen:imageNueva
 
 
     });
