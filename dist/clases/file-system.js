@@ -14,6 +14,7 @@ class FileSystem {
         return new Promise((resolve, reject) => {
             //crear nombre carpetas
             const path = this.crearCarpetaUsuario(userId);
+            console.log('sera el final del hombre araña');
             //crear nombre archivo
             const nombreArchivo = this.generarNombreArchivo(file.name);
             //mover a la carpeta temporal
@@ -41,9 +42,15 @@ class FileSystem {
         const pathUserTemp = pathUser + '/temp';
         // console.log(pathUser);
         const existe = fs_1.default.existsSync(pathUser);
+        const existe2 = fs_1.default.existsSync(pathUserTemp);
         if (!existe) {
             fs_1.default.mkdirSync(pathUser);
             fs_1.default.mkdirSync(pathUserTemp);
+        }
+        else {
+            if (!existe2) {
+                fs_1.default.mkdirSync(pathUserTemp);
+            }
         }
         return pathUserTemp;
     }
@@ -97,9 +104,25 @@ class FileSystem {
         console.log('fileUpload', file);
         return new Promise((resolve, reject) => {
             //crear nombre carpetas
+            console.log('crear carpeta');
             const path = this.crearCarpetaConPerfil(userId);
             //crear nombre archivo
+            console.log('crear nombre archivo');
             const nombreArchivo = this.generarNombreArchivo(file.name);
+            const fs = require('fs');
+            const dir = path + '/';
+            console.log('antes de escanear');
+            const files = fs.readdirSync(dir);
+            console.log('todos las imagenes', files);
+            for (const file of files) {
+                try {
+                    fs.unlinkSync(path + '/' + file);
+                    console.log('File removed');
+                }
+                catch (err) {
+                    console.error('Something wrong happened removing the file', err);
+                }
+            }
             //mover a la carpeta perfil
             file.mv(`${path}/${nombreArchivo}`, (err) => {
                 if (err) {

@@ -144,7 +144,7 @@ userRoutes.post('/create',(req:Request,res:Response)=>{
 // [verificarToken],verificarToken
 userRoutes.post('/update',verificarToken,async (req:any,res:Response)=>{
     console.log('usuario',req.body.imagen);
-    console.log(req.usuario.imagen);
+    console.log(req.usuario);
    const ruta = fileSystem.obtenerImagenesPerfil(req.body._id)
    console.log('ruta',ruta);
    
@@ -155,7 +155,7 @@ userRoutes.post('/update',verificarToken,async (req:any,res:Response)=>{
         //en caso de que no venga algun dato volvemos a dejar la informacion que ya existía
         nombre: req.body.nombre || req.usuario.nombre,
         email:req.body.email    || req.usuario.email,
-        imagen:req.body.imagen || req.usuario.imagen,
+        imagen:ruta[0] || req.usuario.imagen,
         desc:req.body.desc  || req.usuario.desc,
         
       

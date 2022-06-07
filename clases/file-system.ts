@@ -12,7 +12,10 @@ export default class FileSystem {
         return new Promise<void>((resolve, reject) => {
 
             //crear nombre carpetas
+          
+            
             const path = this.crearCarpetaUsuario(userId);
+            console.log('sera el final del hombre araña');
             //crear nombre archivo
             const nombreArchivo = this.generarNombreArchivo(file.name);
 
@@ -54,11 +57,18 @@ export default class FileSystem {
         // console.log(pathUser);
 
         const existe = fs.existsSync(pathUser);
+        const existe2 = fs.existsSync(pathUserTemp);
+        
         if (!existe) {
             fs.mkdirSync(pathUser)
             fs.mkdirSync(pathUserTemp)
 
+            
+        }else{
+            if(!existe2){
+            fs.mkdirSync(pathUserTemp)}
         }
+        
         return pathUserTemp;
 
     }
@@ -136,9 +146,32 @@ export default class FileSystem {
         return new Promise<any>((resolve, reject) => {
 
             //crear nombre carpetas
+            console.log('crear carpeta');
+            
             const path = this.crearCarpetaConPerfil(userId);
             //crear nombre archivo
+            console.log('crear nombre archivo');
+            
             const nombreArchivo = this.generarNombreArchivo(file.name);
+            const fs = require('fs')
+            const dir = path + '/'
+            console.log('antes de escanear');
+            
+            const files = fs.readdirSync(dir)
+            console.log('todos las imagenes', files);
+
+
+
+            for (const file of files) {
+                try {
+                    fs.unlinkSync(path + '/' + file)
+                    console.log('File removed')
+                } catch (err) {
+                    console.error('Something wrong happened removing the file', err)
+                }
+
+            }
+
 
             //mover a la carpeta perfil
             file.mv(`${path}/${nombreArchivo}`, (err: any) => {
