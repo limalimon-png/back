@@ -382,4 +382,42 @@ userRoutes.get('/imagen/:userid/:img',(req:any,res:Response)=>{
     
     });
 
+
+
+
+    // [comprobar email
+userRoutes.post('/email',verificarToken,async (req:any,res:Response)=>{
+    console.log(req.usuario);
+   let emailNuevo=req.body.email;
+   if(emailNuevo==req.usuario.email){
+    return res.json({
+        existe:false,   
+    });
+   }
+   
+    
+    
+    
+  
+    //comprobamos que existe el usuario
+    const userDB=await Usuario.findOne({email:emailNuevo});
+    console.log('userDB',userDB);
+    
+    if(userDB){
+      return  res.json({
+            existe:true,   
+        });
+    }else{
+     return   res.json({
+            existe:false,   
+        });
+    }
+    
+         
+      
+
+
+});
+
+
 export default userRoutes;

@@ -269,4 +269,27 @@ userRoutes.get('/imagen/:userid/:img', (req, res) => {
     const pathFoto = fileSystem.getFotoUrlPerfil(userId, img);
     res.sendFile(pathFoto);
 });
+// [comprobar email
+userRoutes.post('/email', autenticacion_1.verificarToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(req.usuario);
+    let emailNuevo = req.body.email;
+    if (emailNuevo == req.usuario.email) {
+        return res.json({
+            existe: false,
+        });
+    }
+    //comprobamos que existe el usuario
+    const userDB = yield usuario_model_1.Usuario.findOne({ email: emailNuevo });
+    console.log('userDB', userDB);
+    if (userDB) {
+        return res.json({
+            existe: true,
+        });
+    }
+    else {
+        return res.json({
+            existe: false,
+        });
+    }
+}));
 exports.default = userRoutes;
